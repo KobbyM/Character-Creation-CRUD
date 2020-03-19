@@ -6,7 +6,7 @@ import reactivemongo.play.json.collection.JSONCollection
 import scala.concurrent.{ExecutionContext, Future}
 import reactivemongo.play.json._
 import collection._
-import models.{Feed, User}
+import models.User
 import models.JsonFormats._
 import play.api.libs.json.{JsValue, Json}
 import reactivemongo.api.Cursor
@@ -23,10 +23,10 @@ class ApplicationUsingJsonReadersWriters @Inject()(
 
   implicit def ec: ExecutionContext = components.executionContext
 
-  def collection: Future[JSONCollection] = database.map(_.collection[JSONCollection]("persons"))
+  def collection: Future[JSONCollection] = database.map(_.collection[JSONCollection]("characters"))
 
   def create: Action[AnyContent] = Action.async {
-    val user = User(29, "John", "Smith", List(Feed("Slashdot news", "http://slashdot.org/slashdot.rdf")))
+    val user = User(29, "John", "Smith")
     val futureResult = collection.flatMap(_.insert.one(user))
     futureResult.map(_ => Ok("User inserted"))
   }
@@ -57,7 +57,5 @@ class ApplicationUsingJsonReadersWriters @Inject()(
       Ok(persons.toString)
     }
   }
-
-
 
 }
